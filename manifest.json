@@ -2,7 +2,7 @@
     "name": "Калькулятор",
     "short_name": "Калькулятор",
     "description": "Веб-калькулятор с поддержкой PWA и офлайн-режима",
-    "start_url": "/index.html",
+    "start_url": "./index.html",
     "display": "fullscreen",
     "background_color": "#000000",
     "theme_color": "#000000",
