@@ -265,40 +265,7 @@ class Calculator {
 // Инициализация калькулятора
 document.addEventListener('DOMContentLoaded', () => {
     window.calculator = new Calculator();
-    enableFullscreen();
 });
-
-// Включение полноэкранного режима
-function enableFullscreen() {
-    const elem = document.documentElement;
-    
-    // Запрос полноэкранного режима при загрузке
-    setTimeout(() => {
-        if (elem.requestFullscreen) {
-            elem.requestFullscreen().catch(err => {});
-        } else if (elem.webkitRequestFullscreen) {
-            elem.webkitRequestFullscreen().catch(err => {});
-        } else if (elem.msRequestFullscreen) {
-            elem.msRequestFullscreen().catch(err => {});
-        }
-    }, 500);
-    
-    // Обработчик клика для включения fullscreen
-    document.addEventListener('click', function enable() {
-        if (!document.fullscreenElement && 
-            !document.webkitFullscreenElement && 
-            !document.msFullscreenElement) {
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen().catch(err => {});
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen().catch(err => {});
-            } else if (elem.msRequestFullscreen) {
-                elem.msRequestFullscreen().catch(err => {});
-            }
-        }
-        document.removeEventListener('click', enable);
-    }, { once: true });
-}
 
 // Регистрация service worker для PWA
 if ('serviceWorker' in navigator) {
