@@ -15,7 +15,7 @@ body {
     background-color: #000;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
@@ -28,7 +28,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 10px;
+    padding: 8px;
 }
 
 @media (min-aspect-ratio: 1/1) {
@@ -45,9 +45,9 @@ body {
 
 .display {
     background-color: #000;
-    padding: 10px;
+    padding: 10px 10px 5px 10px;
     text-align: right;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     flex: 0 0 auto;
     min-height: 20%;
     display: flex;
@@ -78,6 +78,7 @@ body {
     gap: clamp(8px, 2vw, 12px);
     flex: 1 1 auto;
     align-content: stretch;
+    padding-bottom: 10px;
 }
 
 .btn {
