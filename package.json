@@ -1,0 +1,11 @@
+{
+  "name": "calculator-pwa-icons",
+  "version": "1.0.0",
+  "description": "Генератор иконок для PWA калькулятора",
+  "scripts": {
+    "generate": "node generate.js"
+  },
+  "dependencies": {
+    "sharp": "^0.33.5"
+  }
+}

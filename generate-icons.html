@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор иконок</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        .preview {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+        }
+        .preview-item {
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .preview-item img {
+            width: 100%;
+            height: auto;
+        }
+        .preview-item span {
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Генератор иконок для PWA</h1>
+        <p>Нажмите кнопку ниже, чтобы сгенерировать все необходимые иконки для PWA.</p>
+        
+        <button onclick="generateIcons()">🚀 Сгенерировать иконки</button>
+        
+        <div id="status" class="status"></div>
+        
+        <div class="preview" id="preview"></div>
+    </div>
+
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        
+        async function generateIcons() {
+            const statusDiv = document.getElementById('status');
+            const previewDiv = document.getElementById('preview');
+            
+            try {
+                statusDiv.textContent = 'Загрузка SVG...';
+                statusDiv.className = 'status';
+                
+                const response = await fetch('icon.svg');
+                const svgText = await response.text();
+                
+                const parser = new DOMParser();
+                const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+                const svgElement = svgDoc.documentElement;
+                
+                previewDiv.innerHTML = '';
+                
+                for (const size of sizes) {
+                    statusDiv.textContent = `Генерация иконки ${size}x${size}...`;
+                    
+                    const canvas = document.createElement('canvas');
+                    canvas.width = size;
+                    canvas.height = size;
+                    const ctx = canvas.getContext('2d');
+                    
+                    const svgBlob = new Blob([svgText], {type: 'image/svg+xml;charset=utf-8'});
+                    const url = URL.createObjectURL(svgBlob);
+                    
+                    await new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            ctx.drawImage(img, 0, 0, size, size);
+                            URL.revokeObjectURL(url);
+                            resolve();
+                        };
+                        img.onerror = reject;
+                        img.src = url;
+                    });
+                    
+                    const pngData = canvas.toDataURL('image/png');
+                    
+                    const link = document.createElement('a');
+                    link.download = `icon-${size}.png`;
+                    link.href = pngData;
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'preview-item';
+                    previewItem.innerHTML = `
+                        <img src="${pngData}" alt="icon-${size}.png">
+                        <span>${size}x${size}</span>
+                    `;
+                    previewDiv.appendChild(previewItem);
+                    
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                statusDiv.textContent = '✅ Все иконки успешно сгенерированы! Скачайте их в папку проекта.';
+                statusDiv.className = 'status success';
+                
+            } catch (error) {
+                statusDiv.textContent = '❌ Ошибка: ' + error.message;
+                statusDiv.className = 'status error';
+            }
+        }
+    </script>
+</body>
+</html>
